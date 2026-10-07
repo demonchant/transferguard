@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111714">
+  <meta name="description" content="TransferGuard helps finance teams resolve delayed supplier payments safely.">
+  <title>TransferGuard | Payment operations desk</title>
+  <link rel="preload" as="image" href="/assets/transferguard-hero.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="appShell">
+    <aside class="sidePanel">
+      <a class="brand" href="/" aria-label="TransferGuard home">
+        <span class="brandMark" aria-hidden="true">
+          <svg viewBox="0 0 36 36"><path d="M18 3 30 8v9c0 8-5 13-12 16C11 30 6 25 6 17V8l12-5Z"/><path d="m12 18 4 4 8-9"/></svg>
+        </span>
+        <span><strong>TransferGuard</strong><small>Payment operations</small></span>
+      </a>
+
+      <div class="workspaceLabel">WORKSPACE</div>
+      <nav class="mainNav" aria-label="Main navigation">
+        <button class="navItem active" data-page="desk">
+          <span class="navIcon">◈</span><span>Incident desk</span><span class="navCount" id="incidentCount">0</span>
+        </button>
+        <button class="navItem" data-page="evidence">
+          <span class="navIcon">▤</span><span>Evidence room</span>
+        </button>
+        <button class="navItem" data-page="activity">
+          <span class="navIcon">↗</span><span>Activity log</span>
+        </button>
+      </nav>
+
+      <div class="sideFoot">
+        <div class="sideStatus"><span class="liveDot"></span><span id="connectionText">Checking connection</span></div>
+        <div class="accountRow">
+          <div class="avatar">TG</div>
+          <div class="accountText"><strong>Private workspace</strong><small>Sandbox only</small></div>
+          <button class="iconButton" id="logoutButton" title="Sign out" aria-label="Sign out">↗</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="mainPanel">
+      <header class="topBar">
+        <div class="crumbs"><span>TransferGuard</span><span class="crumbDot">·</span><strong id="pageName">Incident desk</strong></div>
+        <div class="topActions">
+          <span class="modePill sandbox" id="modePill">Airwallex sandbox</span>
+          <button class="quietButton" id="refreshButton"><span class="refreshGlyph">↻</span> Refresh state</button>
+        </div>
+      </header>
+
+      <section class="heroCard" aria-label="TransferGuard overview">
+        <div class="heroShade"></div>
+        <div class="heroContent">
+          <div class="eyebrow"><span class="eyebrowLine"></span> PAYMENT OPERATIONS, WITH PROOF</div>
+          <h1>Move with care.<br><em>Know what happened.</em></h1>
+          <p>Resolve supplier payment incidents with clear evidence, deliberate approvals, and a record you can trust.</p>
+          <div class="heroButtons">
+            <button class="primaryButton" id="heroAction">Create a live transfer <span>↗</span></button>
+            <span class="heroNote"><span class="shieldMini">◇</span> Every action leaves a record</span>
+          </div>
+        </div>
+        <div class="heroStamp"><span class="stampDot"></span><span>SAFE PAYMENT WORKFLOWS</span><span class="stampArrow">↗</span></div>
+      </section>
+
+      <section class="pageView active" id="deskPage">
+        <div class="sectionHeading">
+          <div><div class="eyebrow darkEyebrow">YOUR WORKSPACE</div><h2>Incident desk</h2></div>
+          <div class="headingActions">
+            <button class="outlineButton" id="newIncidentButton">＋ New incident</button>
+          </div>
+        </div>
+
+        <div class="statGrid">
+          <article class="statCard statPrimary"><div class="statTop"><span>Open incidents</span><span class="statIcon">◈</span></div><strong id="openStat">0</strong><small>Across your workspace</small></article>
+          <article class="statCard"><div class="statTop"><span>Needs a decision</span><span class="statIcon amberIcon">◷</span></div><strong id="reviewStat">0</strong><small>Waiting for your review</small></article>
+          <article class="statCard"><div class="statTop"><span>Verified today</span><span class="statIcon greenIcon">✓</span></div><strong id="verifiedStat">0</strong><small>Confirmed from source state</small></article>
+          <article class="statCard"><div class="statTop"><span>Safety rule</span><span class="statIcon">⌁</span></div><strong class="ruleValue">No double pay</strong><small>Unclear state means wait</small></article>
+        </div>
+
+        <div class="workGrid">
+          <section class="panel incidentListPanel">
+            <div class="panelHeading"><div><h3>Recent incidents</h3><p>Choose an incident to review its full history.</p></div><button class="moreButton" aria-label="More incident options">···</button></div>
+            <div id="incidentList" class="incidentList"><div class="emptyList">Your incident list will appear here.</div></div>
+            <button class="textButton" id="allIncidentsButton">View all activity <span>→</span></button>
+          </section>
+
+          <section class="panel detailPanel" id="detailPanel">
+            <div class="emptyDetail">
+              <div class="emptyArt"><span>◈</span><i></i><b></b></div>
+              <div class="eyebrow darkEyebrow">READY WHEN YOU ARE</div>
+              <h3>Start with a payment incident</h3>
+              <p>Create a real transfer in the Airwallex sandbox, then follow its provider state through a delayed payment incident.</p>
+              <button class="primaryButton" id="emptyAction">Create a sandbox transfer <span>↗</span></button>
+            </div>
+            <div class="incidentDetail hidden" id="incidentDetail"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="pageView" id="evidencePage">
+        <div class="sectionHeading"><div><div class="eyebrow darkEyebrow">SOURCE FIRST</div><h2>Evidence room</h2></div></div>
+        <div class="panel longPanel" id="evidenceContent"><div class="quietEmpty">Choose an incident to review its supplier message and extracted evidence.</div></div>
+      </section>
+
+      <section class="pageView" id="activityPage">
+        <div class="sectionHeading"><div><div class="eyebrow darkEyebrow">A RECORD OF EVERY STEP</div><h2>Activity log</h2></div></div>
+        <div class="panel longPanel" id="activityContent"><div class="quietEmpty">Choose an incident to review its activity.</div></div>
+      </section>
+
+      <footer class="pageFooter"><span>TransferGuard</span><span>Airwallex sandbox workflows</span><span>Private by design</span></footer>
+    </main>
+  </div>
+
+  <div class="toastStack" id="toastStack" aria-live="polite" aria-atomic="false"></div>
+
+  <aside class="guideDock" id="guideDock" aria-label="TransferGuard helper">
+    <section class="guideCard hidden" id="guideCard" aria-labelledby="guideTitle">
+      <div class="guideCardHead"><span class="guideStatus" id="guideStatus">Ready to help</span><button class="guideClose" id="guideClose" aria-label="Close helper">×</button></div>
+      <h2 id="guideTitle">Your payment guide</h2>
+      <p id="guideMessage">Start with a sandbox transfer. I will point out the next safe step as the incident changes.</p>
+      <div class="guideActions"><button class="guideAction" id="guideStart">Start a transfer</button><button class="guideAction quietGuideAction" id="guideActivity">Open activity</button></div>
+    </section>
+    <button class="guideBuddy" id="guideBuddy" aria-label="Open TransferGuard helper" aria-expanded="false" aria-controls="guideCard">
+      <svg viewBox="0 0 64 64" role="img" aria-label="A small friendly payment guardian">
+        <path class="buddyCape" d="M13 31 8 52q24 12 48 0l-5-21"/><path class="buddyBody" d="M15 26q0-18 17-18t17 18v18q-17 11-34 0z"/>
+        <path class="buddyFace" d="M19 27q0-14 13-14t13 14v9q-13 8-26 0z"/><path class="buddyEye" d="M26 28v3m12-3v3"/><path class="buddySmile" d="M27 36q5 5 10 0"/>
+        <path class="buddyShield" d="m32 43 7 3v5q0 5-7 8-7-3-7-8v-5z"/><path class="buddyCheck" d="m29 51 2 2 4-5"/>
+        <path class="buddyAntenna" d="M32 8V4"/><circle class="buddyGlow" cx="32" cy="3" r="2.5"/>
+      </svg><span class="buddyPing" aria-hidden="true"></span>
+    </button>
+  </aside>
+
+  <dialog class="loginDialog" id="loginDialog">
+    <form id="loginForm" method="dialog" class="loginCard">
+      <div class="loginLogo"><span class="brandMark"><svg viewBox="0 0 36 36"><path d="M18 3 30 8v9c0 8-5 13-12 16C11 30 6 25 6 17V8l12-5Z"/><path d="m12 18 4 4 8-9"/></svg></span></div>
+      <div class="eyebrow darkEyebrow">OPERATOR CONSOLE</div>
+      <h2>Welcome back</h2>
+      <p>Sign in to review payment incidents and actions.</p>
+      <label for="passwordInput">Operator password</label>
+      <input id="passwordInput" type="password" autocomplete="current-password" required>
+      <button class="primaryButton fullButton" type="submit">Open workspace <span>↗</span></button>
+      <div class="formMessage" id="loginMessage"></div>
+      <small>One private operator sign in for this local demo. Do not share it with suppliers or customers.</small>
+    </form>
+  </dialog>
+
+  <dialog class="actionDialog" id="actionDialog">
+    <form id="actionForm" method="dialog" class="actionCard">
+      <button class="dialogClose" type="button" id="closeActionDialog" aria-label="Close">×</button>
+      <div class="eyebrow darkEyebrow">NEW PAYMENT INCIDENT</div>
+      <h2>Bring a transfer into view</h2>
+      <p>This creates a real transfer in your Airwallex sandbox account. Confirm the exact amount before sending.</p>
+      <label for="supplierInput">Supplier name</label>
+      <input id="supplierInput" maxlength="120" placeholder="Supplier name" required>
+      <label for="beneficiaryInput">Existing sandbox beneficiary ID</label>
+      <input id="beneficiaryInput" maxlength="100" placeholder="Beneficiary ID" autocomplete="off" required>
+      <div class="termGrid"><div><label for="amountInput">Amount</label><input id="amountInput" inputmode="decimal" placeholder="125.00" required></div><div><label for="currencyInput">Currency</label><input id="currencyInput" maxlength="3" value="USD" required></div></div>
+      <label for="referenceInput">Payment reference</label>
+      <input id="referenceInput" maxlength="80" placeholder="Invoice reference" required>
+      <label for="reasonInput">Payment reason</label>
+      <select id="reasonInput"><option value="goods_purchased">Goods purchased</option><option value="professional_business_services">Professional business services</option><option value="wages_salary">Wages and salary</option><option value="taxes">Taxes</option><option value="other_services">Other services</option></select>
+      <label for="deadlineInput">Payment deadline</label>
+      <input id="deadlineInput" type="datetime-local">
+      <label class="checkRow"><input id="confirmPaymentInput" type="checkbox" required><span>I confirm these exact terms will create a real sandbox transfer.</span></label>
+      <div class="dialogActions"><button class="outlineButton" type="button" id="cancelAction">Cancel</button><button class="primaryButton" type="submit">Add incident <span>↗</span></button></div>
+    </form>
+  </dialog>
+</body>
+</html>

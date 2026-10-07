@@ -1,0 +1,15 @@
+{
+  "name": "transferguard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "init-local": "node scripts/init-local.mjs",
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
