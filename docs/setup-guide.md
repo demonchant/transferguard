@@ -103,4 +103,4 @@ The Activity Log shows user actions and Airwallex responses. The Evidence Room i
 
 ## 9. Demo and submission
 
-The event asks for a working demo, a video under five minutes, and a repository link with setup instructions. A public product URL is not listed as a required item. Keep the sandbox label visible and clearly say that the supplier statement is synthetic scenario data and the failure transition is a sandbox simulation. Never present them as real supplier or bank evidence.
+The event asks for a working demo, a video under five minutes, and a repository link with setup instructions. A public product URL is not listed as a required item. Keep the sandbox label visible and clearly say that the supplier statement is synthetic scenario data and the failure transition is a sandbox simulation. Never present them as real supplier or bank evidence. The [Track 03 demo video](../submission/TransferGuard_Track03_Demo.mp4) is under five minutes and shows the sandbox workflow with synthetic scenario data clearly labeled.

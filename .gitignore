@@ -7,3 +7,11 @@ data/
 *.sqlite-wal
 coverage/
 node_modules/
+1.mp4
+output/
+submission/narration.mp3
+submission/render_demo.py
+submission/render-assets/
+submission/narration.srt
+submission/narration.txt
+docs/demo-video.md

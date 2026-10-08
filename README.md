@@ -4,7 +4,7 @@ TransferGuard is a payment operations desk for one operator and one Airwallex sa
 
 ## Current state
 
-The full Track 3 sandbox flow has been exercised through Airwallex. The original USD 10 transfer was reconciled by its saved request ID after an uncertain response, then moved through the Airwallex simulator to `SENT` and terminal `CANCELLED`. A clearly labeled synthetic scenario was recorded. After exact terms approval, one USD 10 replacement was created, advanced through the sandbox simulator, and independently read back as `PAID`; both records were verified and the incident is `RESOLVED`. Full workflow checks also covered exact duplicate original submission, nonterminal replacement block, stale evidence, approval replay, second replacement prevention, and premature verification. Eleven local tests pass. A clean reviewer setup with separate credentials remains. The event requires a working demo, a video under five minutes, and a repository link with setup instructions. The video and accessible repository remain. Claude and public hosting are optional for the published submission requirements. The official build period starts 25 October 2026 and project submissions are due 13 November; confirm whether work prepared before the build period may be submitted.
+The full Track 3 sandbox flow has been exercised through Airwallex. The original USD 10 transfer was reconciled by its saved request ID after an uncertain response, then moved through the Airwallex simulator to `SENT` and terminal `CANCELLED`. A clearly labeled synthetic scenario was recorded. After exact terms approval, one USD 10 replacement was created, advanced through the sandbox simulator, and independently read back as `PAID`; both records were verified and the incident is `RESOLVED`. Full workflow checks also covered exact duplicate original submission, nonterminal replacement block, stale evidence, approval replay, second replacement prevention, and premature verification. Eleven local tests pass. A clean reviewer setup with separate credentials remains. The event requires a working demo, a video under five minutes, and a repository link with setup instructions. The demo video is included below. Claude and public hosting are optional for the published submission requirements. The official build period starts 25 October 2026 and project submissions are due 13 November; confirm whether work prepared before the build period may be submitted.
 
 The project targets the open Founder’s Choice and Judges Choice categories. It does not claim eligibility for Visa or Metal awards. Track: Treasury & Ops, Starter Kit 03, Payment Ops Incident Commander.
 
@@ -34,6 +34,10 @@ There is no judge mode or public app link to log into. Reviewers run the same op
 6. Use the normal interface to create a low value sandbox transfer, reconcile provider state, record the supplier statement used for the scenario, review exact replacement terms, approve, and verify both provider records. The simulator buttons call Airwallex sandbox endpoints and are labeled as simulations in the activity history.
 
 The app has no central reviewer login and does not expose one participant's Airwallex account to another. The submitted repository and setup instructions are the runnable demo. A shared hosted login would require individual accounts, tenant isolation, and credential management, which this single operator build does not claim to provide.
+
+## Demo video
+
+Watch the [Track 03 demo video](submission/TransferGuard_Track03_Demo.mp4). The voiceover opens with the supplier payment problem, labels the synthetic supplier scenario, and explains the recorded stale server attempt, its cancellation, the later duplicate block, and the separate resolved incident. The video is under the event's five minute limit; it does not show production transfers or genuine supplier evidence.
 
 ## Environment values
 
