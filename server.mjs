@@ -120,6 +120,8 @@ function publicIncident(row) {
     deadline: row.deadline,
     supplierMessage: row.supplier_message,
     evidence: row.evidence_json,
+    claudeReviewCurrent: Boolean(row.evidence_json?.source === "claude" && row.evidence_json.reviewedEvidenceHash && row.evidence_json.reviewedEvidenceHash === currentSupplierEvidenceDigest(row)),
+    claudeReplacementEligible: Boolean(row.evidence_json?.source === "claude" && row.evidence_json.reviewedEvidenceHash === currentSupplierEvidenceDigest(row) && row.evidence_json.suggested_action === "review_replacement" && row.evidence_json.claims?.some((claim) => claim.kind === "supplier_reports_not_received") && String(row.original_json?.status || "").toUpperCase() === "CANCELLED"),
     replacementId: row.replacement_id,
     replacementRequestId: row.replacement_request_id,
     version: row.version,
@@ -192,6 +194,11 @@ function currentSupplierEvidenceDigest(incident) {
 
 function currentSupplierEvidenceDetails(incident) {
   return store.getEvents(incident.id).reverse().find((event) => event.kind === "SUPPLIER_MESSAGE_ADDED")?.details_json || null;
+}
+
+function hasGroundedNonReceiptClaim(evidence) {
+  return Boolean(evidence?.claims?.some((claim) => claim.kind === "supplier_reports_not_received" &&
+    /\b(?:not|never|hasn't|has not|haven't|have not|didn't|did not)\b.{0,45}\b(?:receive\w*|arriv\w*|credit\w*|deliver\w*)\b|\bno\s+(?:payment|funds?)\s+(?:was\s+)?received\b/i.test(claim.quote)));
 }
 
 async function createIncidentFromTransfer(body) {
@@ -377,6 +384,7 @@ async function handleApi(req, res, url) {
     }
     const updated = store.updateIncident(incident.id, incident.version, {
       supplierMessage: message,
+      ...(evidenceChanged ? { evidence: null } : {}),
       ...(evidenceChanged && pendingProposal?.status === "PENDING" ? { status: "REPLACEMENT_READY" } : {}),
     });
     store.addEvent(incident.id, "SUPPLIER_MESSAGE_ADDED", {
@@ -393,7 +401,9 @@ async function handleApi(req, res, url) {
     const incident = store.getIncident(analyzeId);
     if (!incident) return json(res, 404, { error: { code: "not_found", message: "Incident not found." } });
     if (!incident.supplier_message) return json(res, 400, { error: { code: "message_required", message: "Add a supplier message before analysis." } });
-    const evidence = await analyzeSupplierMessage(incident.supplier_message, incident);
+    const evidenceHash = currentSupplierEvidenceDigest(incident);
+    if (!evidenceHash) return json(res, 409, { error: { code: "evidence_source_missing", message: "Save the supplier message and its source details before Claude review." } });
+    const evidence = await analyzeSupplierMessage(incident.supplier_message, { ...incident, evidenceHash });
     const updated = store.updateIncident(incident.id, incident.version, { evidence });
     store.addEvent(incident.id, "SUPPLIER_MESSAGE_ANALYZED", { claims: evidence.claims, suggestedAction: evidence.suggested_action, model: evidence.model }, "claude");
     return json(res, 200, { incident: publicIncident(updated) });
@@ -451,6 +461,15 @@ async function handleApi(req, res, url) {
     if (incident.supplier_message.length < 8) {
       return json(res, 400, { error: { code: "message_required", message: "Add the supplier update before proposing a replacement." } });
     }
+    const savedEvidence = incident.evidence_json;
+    const evidenceHash = currentSupplierEvidenceDigest(incident);
+    const evidenceSupportsReplacement = savedEvidence?.source === "claude" &&
+      savedEvidence.reviewedEvidenceHash === evidenceHash &&
+      savedEvidence.suggested_action === "review_replacement" &&
+      hasGroundedNonReceiptClaim(savedEvidence);
+    if (!evidenceSupportsReplacement) {
+      return json(res, 409, { error: { code: "claude_review_required", message: "Run a current Claude evidence review first. A replacement can be proposed only when the saved update explicitly reports non receipt and Claude recommends human review." } });
+    }
     const existingProposal = store.getProposalForIncident(incident.id);
     if (existingProposal?.status === "PENDING") {
       return json(res, 200, {
@@ -477,7 +496,6 @@ async function handleApi(req, res, url) {
     }
     const requestId = randomUUID();
     const terms = replacementPayload(current, requestId, incident.id);
-    const evidenceHash = currentSupplierEvidenceDigest(incident);
     const id = randomUUID();
     const hash = termsDigest({ terms, evidenceHash });
     const proposal = store.createProposal({ id, incidentId: incident.id, requestId, terms, hash, evidenceHash });

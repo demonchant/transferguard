@@ -4,7 +4,7 @@ TransferGuard is a payment operations desk for one operator and one Airwallex sa
 
 ## Current state
 
-The full Track 3 sandbox flow has been exercised through Airwallex. The original USD 10 transfer was reconciled by its saved request ID after an uncertain response, then moved through the Airwallex simulator to `SENT` and terminal `CANCELLED`. A clearly labeled synthetic scenario was recorded. After exact terms approval, one USD 10 replacement was created, advanced through the sandbox simulator, and independently read back as `PAID`; both records were verified and the incident is `RESOLVED`. Full workflow checks also covered exact duplicate original submission, nonterminal replacement block, stale evidence, approval replay, second replacement prevention, and premature verification. Eleven local tests pass. A clean reviewer setup with separate credentials remains. The event requires a working demo, a video under five minutes, and a repository link with setup instructions. The demo video is included below. Claude and public hosting are optional for the published submission requirements. The official build period starts 25 October 2026 and project submissions are due 13 November; confirm whether work prepared before the build period may be submitted.
+The full Track 3 sandbox flow has been exercised through Airwallex. The original USD 10 transfer was reconciled by its saved request ID after an uncertain response, then moved through the Airwallex simulator to `SENT` and terminal `CANCELLED`. A clearly labeled synthetic scenario was recorded. After exact terms approval, one USD 10 replacement was created, advanced through the sandbox simulator, and independently read back as `PAID`; both records were verified and the incident is `RESOLVED`. Full workflow checks also covered exact duplicate original submission, nonterminal replacement block, stale evidence, approval replay, second replacement prevention, and premature verification. Eleven local tests pass. A clean reviewer setup with separate credentials remains. The event requires a working demo, a video under five minutes, and a repository link with setup instructions. The demo video is included below. Claude is required by this build for evidence analysis; its recommendation is advisory and cannot authorize money movement. Public hosting is optional for the published submission requirements. The official build period starts 25 October 2026 and project submissions are due 13 November; confirm whether work prepared before the build period may be submitted.
 
 The project targets the open Founder’s Choice and Judges Choice categories. It does not claim eligibility for Visa or Metal awards. Track: Treasury & Ops, Starter Kit 03, Payment Ops Incident Commander.
 
@@ -14,7 +14,7 @@ Requirements: Node.js 24 or newer and an Airwallex sandbox account. No package i
 
 1. Run `npm run init-local`. This creates a private `.env` with an operator password, session signing secret, and data encryption key. The script never prints those values.
 2. Open `.env` on your own device. Save the generated `APP_PASSWORD` in your password manager so you can sign in. Do not paste secrets into chat or commit `.env`.
-3. Add the Airwallex sandbox Client ID and API key described below. Add a Claude API key only if you want supplier message analysis. Claude is optional; the transfer workflow uses Airwallex status, deterministic policy, and your explicit approval.
+3. Add the Airwallex sandbox Client ID and API key described below. Add a Claude API key to enable the required supplier evidence analysis. Replacement preparation is blocked until a current Claude review grounds an explicit non receipt claim; Airwallex readback, deterministic policy, and your approval still control payments.
 4. In the Airwallex sandbox, select a beneficiary and check the wallet balance. Newly provisioned self serve sandbox accounts may include test balances and default beneficiaries. If the wallet is empty, use only Airwallex sandbox funding or simulation. No real money is needed. Starter Kit 03 requires a funded sandbox wallet.
 5. Run `npm start` and open `http://127.0.0.1:3000`.
 
@@ -37,7 +37,7 @@ The app has no central reviewer login and does not expose one participant's Airw
 
 ## Demo video
 
-Watch the [Track 03 demo video](submission/TransferGuard_Track03_Demo.mp4). The voiceover opens with the supplier payment problem, labels the synthetic supplier scenario, and explains the recorded stale server attempt, its cancellation, the later duplicate block, and the separate resolved incident. The video is under the event's five minute limit; it does not show production transfers or genuine supplier evidence.
+Watch the [Track 03 demo video](submission/TransferGuard_Track03_Demo.mp4). The voiceover opens with the supplier payment problem, labels the synthetic supplier scenario, and explains the evidence review, duplicate protection, and independently verified resolution. The video is under the event's five minute limit; it does not show production transfers or genuine supplier evidence.
 
 ## Environment values
 
@@ -65,7 +65,7 @@ Use a low amount in the sandbox and only proceed after you have read the exact t
 
 1. Create a transfer using a real sandbox beneficiary, amount, currency, reason, and reference. The operator confirms that the exact terms should create a sandbox payout.
 2. TransferGuard stores a request ID before it calls Airwallex. If the result is unclear, it searches that request ID and does not retry with a new payment.
-3. Save a supplier update for a real workflow, or select the clearly labeled synthetic scenario source for the hackathon scenario. Synthetic text is never presented as a real supplier message. Claude may extract quoted claims, but cannot establish payment state or authorize money movement.
+3. Save a supplier update for a real workflow, or select the clearly labeled synthetic scenario source for the hackathon scenario. Synthetic text is never presented as a real supplier message. Claude extracts grounded supplier claims and recommends wait, review, or escalation. It cannot establish payment state or authorize money movement.
 4. Refresh the transfer from Airwallex. For the demonstration, use Airwallex’s sandbox simulator to move it to `SENT`, then to `FAILED` with a bank return. Airwallex’s Kit 03 guide states that a failed transfer reaches terminal `CANCELLED`; the app only offers a replacement after it reads that state back.
 5. Confirm the saved update reports non receipt. Review the replacement’s amount, currency, beneficiary, reference, and terms hash. Type `APPROVE EXACT REPLACEMENT` to authorize the one exact operation.
 6. If creation times out, reconcile by the saved request ID. The UI blocks a second payment while the result is unclear.

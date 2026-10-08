@@ -23,7 +23,7 @@ npm run init-local
 3. To list beneficiaries, use a separate read only key with **Payouts → Beneficiaries → Read**, or add that read permission to the sandbox key if you prefer one key. Do not grant unrelated write permissions.
 4. Copy the Client ID and API key into the private `.env` file as `AIRWALLEX_CLIENT_ID` and `AIRWALLEX_API_KEY`. Never expose the values in a screenshot, recording, public repository, or chat.
 
-The optional Claude integration is not needed to run Track 3. The transfer policy, explicit approval, simulator, and final verification work without a Claude key.
+Claude is required for the evidence decision step. Create an API key in the Anthropic Console at https://console.anthropic.com/settings/keys, ensure the account has API usage enabled, then put it in `.env` as `CLAUDE_API_KEY`. Do not share or commit the key. The app refuses to start without it. Reviewers need their own Claude API access and any required billing or credits. Claude extracts quoted claims and recommends wait, review, or escalation; deterministic checks, Airwallex readback, and explicit human approval retain control of payment actions.
 
 ## 3. Prepare a sandbox beneficiary and funds
 
@@ -78,8 +78,9 @@ These checks do not call Airwallex and do not create payment records.
 4. Save the supplier update. For the hackathon scenario, choose **Synthetic hackathon scenario** and keep the first line explicit: `DEMO SCENARIO ONLY. No real supplier sent this message.` Enter when the scenario was prepared.
 5. Prepare the replacement proposal only after the original reads `CANCELLED`. Review its amount, currency, beneficiary, reference, evidence fingerprint, and terms fingerprint. Confirm the scenario says the original payment was not received.
 6. Type `APPROVE EXACT REPLACEMENT`. This approves only the exact displayed terms and saved evidence. The replacement receives a distinct request ID.
-7. Use the sandbox simulator to move the replacement through `SENT` to `PAID`.
-8. Choose **Verify both transfers**. The incident resolves only after fresh Airwallex reads confirm original `CANCELLED` and replacement `PAID`.
+7. Type `APPROVE EXACT REPLACEMENT` to approve the exact reviewed terms and evidence.
+8. Use the sandbox simulator to move the replacement through `SENT` to `PAID`.
+9. Choose **Verify both transfers**. The incident resolves only after fresh Airwallex reads confirm original `CANCELLED` and replacement `PAID`.
 
 ## 6. Duplicate payment behavior
 
